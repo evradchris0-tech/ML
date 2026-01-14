@@ -34,15 +34,12 @@ with col6:
 sex_encoded = 1 if sex == 'male' else 0
 smoker_encoded = 1 if smoker == 'yes' else 0
 
-# Encodage et fréquence de la région
+# Encodage de la région
 region_mapping = {'southwest': 0, 'southeast': 1, 'northwest': 2, 'northeast': 3}
-region_freq_mapping = {'southwest': 0.24308153, 'southeast': 0.27225131, 'northwest': 0.24233358, 'northeast': 0.27225131}
-
 region_encoded = region_mapping[region]
-region_freq = region_freq_mapping[region]
 
-# Préparation des données (7 features attendues par le modèle)
-input_data = [[age, sex_encoded, bmi, children, smoker_encoded, region_encoded, region_freq]]
+# Préparation des données (6 features attendues par le modèle)
+input_data = [[age, sex_encoded, bmi, children, smoker_encoded, region_encoded]]
 
 # Prédiction
 if st.button('Prédire les charges médicales'):
@@ -53,14 +50,3 @@ if st.button('Prédire les charges médicales'):
     st.success("Prédiction terminée!")
     st.markdown(f"### Charges médicales estimées : **${round(prediction):,}**")
     st.balloons()
-
-    # Informations supplémentaires
-    st.info(f"""
-    **Détails de la prédiction:**
-    - Âge: {age} ans
-    - Sexe: {sex}
-    - IMC: {bmi}
-    - Nombre d'enfants: {children}
-    - Fumeur: {smoker}
-    - Région: {region}
-    """)
