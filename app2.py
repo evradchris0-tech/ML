@@ -13,8 +13,15 @@ def load_data(dataset):
 st.sidebar.image('images/diabetes.jpg')
 
 def main():
-    st.markdown("<h1 style='text-align: center; color: brown;'>Diabetes Prediction App</h1>", unsafe_allow_html=True)
-    st.markdown("<h2 style='text-align: center; color: black;'>Diabetes study in Cameroun</h2>", unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 10px; margin-bottom: 20px;">
+            <h1 style="color: white; margin: 0;">🩺 Diabetes Prediction App</h1>
+            <p style="color: white; font-size: 1.2em; margin: 10px 0 0 0; opacity: 0.9;">Diabetes study in Cameroon</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     menu = ['Home', 'Analysis', 'Data Visualization', 'Machine Learning']
     choice = st.sidebar.selectbox("Select a page", menu)
@@ -63,13 +70,37 @@ def main():
                 sns.histplot(data=df, x='Glucose')
                 st.pyplot(fig4)
             with tab3:
-                model=pickle.load(open('model_dump.pkl', 'rb'))
-                prediction = model.predict(df)
-                st.subheader("Prediction")
-                pp = pd.DataFrame(prediction, columns=['Prediction'])
-                ndf = pd.concat([df, pp], axis=1)
-                ndf.Prediction.replace({0, 'No Diabetes'}, inplace=True)
-                ndf.Prediction.replace({1, 'Diabetes'}, inplace=True)
-                st.write(ndf)
+                if st.button('🔮 Prédire le diabète', type='primary', use_container_width=True):
+                    with st.spinner('Analyse en cours...'):
+                        model=pickle.load(open('model_dump.pkl', 'rb'))
+                        prediction = model.predict(df)
+
+                    st.success("✅ Prédiction terminée avec succès!")
+
+                    # Créer le DataFrame avec les prédictions
+                    pp = pd.DataFrame(prediction, columns=['Prediction'])
+                    ndf = pd.concat([df, pp], axis=1)
+                    ndf['Status'] = ndf['Prediction'].apply(lambda x: '❌ Diabetes' if x == 1 else '✅ No Diabetes')
+
+                    # Statistiques
+                    diabetes_count = (ndf['Prediction'] == 1).sum()
+                    no_diabetes_count = (ndf['Prediction'] == 0).sum()
+                    total = len(ndf)
+
+                    # Affichage des statistiques
+                    st.markdown("---")
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("📊 Total", total)
+                    with col2:
+                        st.metric("✅ No Diabetes", f"{no_diabetes_count} ({no_diabetes_count/total*100:.1f}%)")
+                    with col3:
+                        st.metric("❌ Diabetes", f"{diabetes_count} ({diabetes_count/total*100:.1f}%)",
+                                 delta=f"{diabetes_count/total*100:.1f}%", delta_color="inverse")
+                    st.markdown("---")
+
+                    # Afficher le tableau des résultats
+                    st.subheader("📋 Résultats détaillés")
+                    st.dataframe(ndf, use_container_width=True, height=400)
 if __name__ == '__main__':
     main()
