@@ -22,7 +22,7 @@ col3,col4 =st.columns(2)
 with col3:
     bmi = st.number_input('BMI (Indice Masse Corporelle)', 10,50,25)
 with col4:
-    children = st.selectbox('Nombre d enfants ?', 0,5,1)
+    children = st.selectbox('Nombre d enfants ?', options=[0, 1, 2, 3, 4, 5], index=0)
     
 col5,col6 =st.columns(2)
 with col5:
