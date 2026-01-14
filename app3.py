@@ -3,7 +3,7 @@ import pickle
 import time
 
 #chargement du module
-with open('reg.pkl', 'rb') as file:
+with open('regS.pkl', 'rb') as file:
     model = pickle.load(file)
     
 st.title('Predicteur de charges d assurances medicales')
@@ -64,5 +64,3 @@ if st.button('Prédire les charges médicales'):
     - Fumeur: {smoker}
     - Région: {region}
     """)
-    
-    
