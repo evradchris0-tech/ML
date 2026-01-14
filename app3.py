@@ -42,11 +42,39 @@ region_encoded = region_mapping[region]
 input_data = [[age, sex_encoded, bmi, children, smoker_encoded, region_encoded]]
 
 # Prédiction
-if st.button('Prédire les charges médicales'):
+if st.button('🔮 Prédire les charges médicales', type='primary', use_container_width=True):
     with st.spinner('Calcul en cours...'):
         prediction = model.predict(input_data)[0]
         time.sleep(1)
 
-    st.success("Prédiction terminée!")
-    st.markdown(f"### Charges médicales estimées : **${round(prediction):,}**")
+    st.success("✅ Prédiction terminée avec succès!")
     st.balloons()
+
+    # Affichage du montant en grand avec mise en forme
+    st.markdown("---")
+    st.markdown(
+        f"""
+        <div style="text-align: center; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; margin: 20px 0;">
+            <h1 style="color: white; font-size: 3.5em; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                💰 ${round(prediction):,}
+            </h1>
+            <p style="color: white; font-size: 1.3em; margin-top: 10px; opacity: 0.9;">
+                Charges médicales annuelles estimées
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown("---")
+
+    # Informations supplémentaires
+    col_info1, col_info2, col_info3 = st.columns(3)
+    with col_info1:
+        st.metric("👤 Âge", f"{age} ans")
+        st.metric("🚬 Fumeur", smoker)
+    with col_info2:
+        st.metric("⚖️ IMC", f"{bmi}")
+        st.metric("📍 Région", region)
+    with col_info3:
+        st.metric("👥 Enfants", children)
+        st.metric("⚧️ Sexe", sex)
